@@ -1,0 +1,792 @@
+2025-04-14 17:10:20 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %rorber%
+2025-04-14 17:12:14 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %Linda%
+2025-04-14 17:12:17 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 115, Limit: 10, Search key: %Linda%
+2025-04-14 17:12:20 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 206, Limit: 10, Search key: %Linda%
+2025-04-14 17:12:21 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 325, Limit: 10, Search key: %Linda%
+2025-04-14 17:12:23 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 459, Limit: 10, Search key: %Linda%
+2025-04-14 17:13:03 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %inda%
+2025-04-14 17:13:04 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 115, Limit: 10, Search key: %inda%
+2025-04-14 17:13:06 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 206, Limit: 10, Search key: %inda%
+2025-04-14 17:13:07 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 325, Limit: 10, Search key: %inda%
+2025-04-14 17:13:10 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ?
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: none
+2025-04-14 17:13:12 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %so%
+2025-04-14 17:13:19 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %some%
+2025-04-14 17:13:26 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %some%
+2025-04-14 17:13:30 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %som%
+2025-04-14 17:13:37 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %so%
+2025-04-14 17:13:40 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %s%
+2025-04-14 17:13:41 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ?
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: none
+2025-04-14 17:13:44 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %j%
+2025-04-14 17:13:50 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %jo%
+2025-04-14 17:13:56 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE BINARY ? OR first_name LIKE BINARY ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %jon%
+2025-04-14 17:14:59 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ?
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: none
+2025-04-14 17:15:02 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %jo%
+2025-04-14 17:15:03 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %jon%
+2025-04-14 17:15:05 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ?
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: none
+2025-04-14 17:15:06 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %metin%
+2025-04-14 17:15:17 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %me%
+2025-04-14 17:15:19 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ?
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: none
+2025-04-14 17:15:23 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %mama%
+2025-04-14 17:15:34 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %mamasjdnsajdnsadsa%
+2025-04-14 17:15:43 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %ni%
+2025-04-14 17:15:51 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ?
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: none
+2025-04-14 17:15:53 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 0, Limit: 10, Search key: %jon%
+2025-04-14 17:15:55 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 93, Limit: 10, Search key: %jon%
+2025-04-14 17:15:56 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 206, Limit: 10, Search key: %jon%
+2025-04-14 17:16:00 - SELECT
+        ne.emp_id,
+        ne.emp_no,
+        ne.birth_date,
+        ne.first_name,
+        ne.last_name,
+        ne.gender,
+        nt.title,
+        ns.salary,
+        nd1.dept_name as 'nd1.dept_name',
+        nd2.dept_name as 'nd2.dept_name'
+    FROM
+        (SELECT * FROM nth_employees
+          WHERE emp_id > ? AND (last_name LIKE ? OR first_name LIKE ?)
+         ORDER BY emp_id ASC
+         LIMIT ?) ne
+    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
+    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
+    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
+    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id - Query with last_id: 331, Limit: 10, Search key: %jon%
