@@ -75,7 +75,10 @@ try {
             <p><strong>PHP Version:</strong> <?php echo phpversion(); ?></p>
             <p><strong>MySQL Version:</strong> <?php echo $mysqlVersion['version']; ?></p>
             <p><strong>Server:</strong> <?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
-            <a href="http://localhost:80/select2/index.php">Select2</a>
+            <a href="http://localhost:80/select2/index.php">Select2 Optimized</a><br>
+            <a href="http://localhost:80/select2/get_data.php">Select2 Original</a><br>
+            <a href="http://localhost:80/select2/get_data_fixed.php">Pagination Optimized</a><br>
+            <a href="http://localhost:80/select2/get_data_fixed_2.php">Pagination Original</a>
         </div>
     </div>
 </body>

@@ -18,19 +18,19 @@ try {
     $params = [];
     
     // Điều kiện emp_id
-    $searchCondition .= " WHERE emp_id > ?";
-    $params[] = $lastEmpId;
+    $searchCondition .= "WHERE ne.emp_id > :emp_id";
+    $params['emp_id'] = $lastEmpId;
     
     // Thêm điều kiện tìm kiếm theo tên
     if (!empty($searchTerm)) {
-        $searchCondition .= " AND (last_name LIKE ? OR first_name LIKE ?)";
-        $searchParam = '%' . $searchTerm . '%';
-        $params[] = $searchParam;
-        $params[] = $searchParam;
+        $searchCondition .= " AND (ne.last_name LIKE :search_term OR ne.first_name LIKE :search_term OR nt.title LIKE :search_term)";
+        $searchParam = `'%' . $searchTerm . '%'`;
+        $params['search_term'] = $searchParam;
     }
     
     // Tạo truy vấn theo mẫu yêu cầu
-    $query = "SELECT
+    $query = <<<SQL
+    SELECT
         ne.emp_id,
         ne.emp_no,
         ne.birth_date,
@@ -41,17 +41,16 @@ try {
         ns.salary,
         nd1.dept_name as 'nd1.dept_name',
         nd2.dept_name as 'nd2.dept_name'
-    FROM
-        (SELECT * FROM nth_employees
-         {$searchCondition}
-         ORDER BY emp_id ASC
-         LIMIT ?) ne
-    LEFT JOIN nth_titles nt ON ne.emp_id = nt.emp_id
+    FROM nth_employees ne
+    INNER JOIN nth_titles nt ON ne.emp_id = nt.emp_id
     LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
     LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
     LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
     LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
-    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id";
+    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id
+    {$searchCondition}
+    LIMIT 10
+SQL;
     
     // Thêm param cho LIMIT
     $params[] = $limit;
@@ -60,18 +59,19 @@ try {
     error_log("SQL Query: " . str_replace('{$searchCondition}', $searchCondition, $query));
     error_log("Params: " . json_encode($params));
     // Ghi log câu truy vấn và tham số vào file
-    $logMessage = date('Y-m-d H:i:s') . " - " . str_replace('{$searchCondition}', $searchCondition, $query) . " - Query with last_id: " . $lastEmpId . ", Limit: " . $limit . ", Search key: " . ($searchParam ?: 'none') . "\n";
+    $logMessage = date('Y-m-d H:i:s') . " - " . str_replace('{$searchCondition}', $searchCondition, $query) . " - Query with last_id: " . $lastEmpId . ", Limit: " . $limit . ", Search key: " . ($searchParam ?? 'none') . "\n";
     $logFile = __DIR__ . '/logs/select2_query.txt';
     
     // Đảm bảo thư mục logs tồn tại
-    if (!is_dir(dirname($logFile))) {
-        mkdir(dirname($logFile), 0755, true);
-    }
+    // if (!is_dir(dirname($logFile))) {
+    //     mkdir(dirname($logFile), 0755, true);
+    // }
     
-    // Ghi log vào file
+    // // Ghi log vào file
     file_put_contents($logFile, $logMessage, FILE_APPEND);
     
     // Thực thi truy vấn
+    // $stmt = $db->query($query, $params);
     $stmt = $db->query($query, $params);
     $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
     

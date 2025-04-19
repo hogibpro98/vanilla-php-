@@ -1,0 +1,14 @@
+# Ignore MySQL data directory
+/mysql/
+
+# Ignore logs directory
+/src/select2/logs/
+
+# Common PHP files to ignore
+/vendor/
+composer.lock
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db 

@@ -287,4 +287,4 @@ DELIMITER ;
 -- Để chạy procedure:
 CALL generate_fake_data();
 DROP PROCEDURE IF EXISTS generate_fake_data;
--- docker exec -i $(docker ps -qf "name=mysql") mysql -u laravel_user -ppassword laravel < /home/ninja-vue/project/php/php-core/fake_data_fixed.sql
+-- sudo docker exec -i $(docker ps -qf "name=mysql_db") mysql -u app_user -psecret php_app < /home/ninja-vue/project/php/php-core/fake_data_fixed.sql
