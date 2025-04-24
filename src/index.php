@@ -77,8 +77,11 @@ try {
             <p><strong>Server:</strong> <?php echo $_SERVER['SERVER_SOFTWARE']; ?></p>
             <a href="http://localhost:80/select2/index.php">Select2 Optimized</a><br>
             <a href="http://localhost:80/select2_original/index.php">Select2 Original</a><br>
+            <a href="http://localhost:80/select2_pagination/index.php">Select2 Pagination</a><br>
             <a href="http://localhost:80/select2/get_data_fixed.php">Pagination Optimized</a><br>
-            <a href="http://localhost:80/select2/get_data_fixed_2.php">Pagination Original</a>
+            <a href="http://localhost:80/select2/get_data_fixed_2.php">Pagination Original</a><br>
+            <a href="http://localhost:80/export_csv/index.php">Export CSV Optimized</a><br>
+            <a href="http://localhost:80/export_csv/export_with_progress.php">Export CSV Original</a>
         </div>
     </div>
 </body>

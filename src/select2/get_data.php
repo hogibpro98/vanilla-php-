@@ -5,80 +5,72 @@ require_once __DIR__ . '/../db/database.php';
 // Set the response header to JSON
 header('Content-Type: application/json');
 
-// Lấy và validate các tham số
+// Get and validate parameters
 $searchTerm = isset($_GET['q']) ? trim($_GET['q']) : '';
 $lastEmpId = isset($_GET['last_id']) ? (int)$_GET['last_id'] : 0;
-$limit = 10; // Giới hạn cố định
+$limit = 10; // Fixed limit
 
 try {
     $db = new Database();
-    
-    // Xây dựng điều kiện tìm kiếm
-    $searchCondition = "";
     $params = [];
     
-    // Điều kiện emp_id
-    $searchCondition .= "WHERE ne.emp_id > :emp_id";
-    $params['emp_id'] = $lastEmpId;
-    
-    // Thêm điều kiện tìm kiếm theo tên
-    if (!empty($searchTerm)) {
-        $searchCondition .= " AND (ne.last_name LIKE :search_term OR ne.first_name LIKE :search_term OR nt.title LIKE :search_term)";
-        $searchParam = `'%' . $searchTerm . '%'`;
-        $params['search_term'] = $searchParam;
+    // If this is the first request (last_id = 0), get the maximum employee ID
+    if ($lastEmpId === 0) {
+        // Get the highest employee ID to start pagination from top
+        $maxIdQuery = "SELECT MAX(emp_id) as max_id FROM nth_employees";
+        $maxIdResult = $db->selectOne($maxIdQuery);
+        $maxId = isset($maxIdResult['max_id']) ? (int)$maxIdResult['max_id'] + 1 : 1;
+        
+        // Start from one above the maximum ID to include all records
+        $innerCondition = "WHERE e.emp_id < ?";
+        $params[] = $maxId;
+    } else {
+        // For subsequent pages, use the provided last_id
+        $innerCondition = "WHERE e.emp_id < ?";
+        $params[] = $lastEmpId;
     }
     
-    // Tạo truy vấn theo mẫu yêu cầu
+    // Add search condition if search term exists
+    if (!empty($searchTerm)) {
+        $searchTerm = '%' . $searchTerm . '%';
+        $innerCondition .= " AND (e.last_name LIKE ? OR e.first_name LIKE ? OR e.emp_no LIKE ?)";
+        $params[] = $searchTerm;
+        $params[] = $searchTerm;
+        $params[] = $searchTerm;
+    }
+    
+    // Create query with all necessary LEFT JOINs
     $query = <<<SQL
     SELECT
-        ne.emp_id,
-        ne.emp_no,
-        ne.birth_date,
-        ne.first_name,
-        ne.last_name,
-        ne.gender,
-        nt.title,
-        ns.salary,
-        nd1.dept_name as 'nd1.dept_name',
-        nd2.dept_name as 'nd2.dept_name'
-    FROM nth_employees ne
-    INNER JOIN nth_titles nt ON ne.emp_id = nt.emp_id
-    LEFT JOIN nth_salaries ns ON ne.emp_id = ns.emp_id
-    LEFT JOIN nth_dept_emp nde ON ne.emp_id = nde.emp_id
-    LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
-    LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
-    LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id
-    {$searchCondition}
-    LIMIT 10
+        e.emp_id,
+        e.emp_no,
+        e.birth_date,
+        e.first_name,
+        e.last_name,
+        e.gender,
+        t.title,
+        s.salary,
+        d1.dept_name as 'nd1.dept_name',
+        d2.dept_name as 'nd2.dept_name'
+    FROM nth_employees e
+    LEFT JOIN nth_titles t ON e.emp_id = t.emp_id
+    LEFT JOIN nth_salaries s ON e.emp_id = s.emp_id
+    LEFT JOIN nth_dept_emp de ON e.emp_id = de.emp_id
+    LEFT JOIN nth_departments d1 ON de.dept_id = d1.dept_id
+    LEFT JOIN nth_dept_manager dm ON e.emp_id = dm.emp_id
+    LEFT JOIN nth_departments d2 ON dm.dept_id = d2.dept_id
+    {$innerCondition}
+    ORDER BY e.emp_id DESC
+    LIMIT {$limit}
 SQL;
     
-    // Thêm param cho LIMIT
-    $params[] = $limit;
+    // Execute the query using select() method
+    $results = $db->select($query, $params);
     
-    // Ghi log câu truy vấn để debug
-    error_log("SQL Query: " . str_replace('{$searchCondition}', $searchCondition, $query));
-    error_log("Params: " . json_encode($params));
-    // Ghi log câu truy vấn và tham số vào file
-    $logMessage = date('Y-m-d H:i:s') . " - " . str_replace('{$searchCondition}', $searchCondition, $query) . " - Query with last_id: " . $lastEmpId . ", Limit: " . $limit . ", Search key: " . ($searchParam ?? 'none') . "\n";
-    $logFile = __DIR__ . '/logs/select2_query.txt';
+    // Get the last employee ID for next pagination (smallest ID in the result set)
+    $lastId = !empty($results) ? end($results)['emp_id'] : 0;
     
-    // Đảm bảo thư mục logs tồn tại
-    // if (!is_dir(dirname($logFile))) {
-    //     mkdir(dirname($logFile), 0755, true);
-    // }
-    
-    // // Ghi log vào file
-    file_put_contents($logFile, $logMessage, FILE_APPEND);
-    
-    // Thực thi truy vấn
-    // $stmt = $db->query($query, $params);
-    $stmt = $db->query($query, $params);
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Lấy emp_id cuối cùng cho lần truy vấn tiếp theo
-    $lastId = !empty($results) ? end($results)['emp_id'] : $lastEmpId;
-    
-    // Định dạng kết quả cho Select2
+    // Format results for Select2
     $formattedResults = [];
     foreach ($results as $row) {
         $formattedResults[] = [
@@ -90,7 +82,7 @@ SQL;
         ];
     }
     
-    // Trả về kết quả
+    // Return the results
     echo json_encode([
         'items' => $formattedResults,
         'has_more' => count($results) >= $limit,
@@ -98,29 +90,17 @@ SQL;
     ]);
     
 } catch (Exception $e) {
-    // Log lỗi chi tiết
+    // Log the error
     error_log("Database error: " . $e->getMessage());
     
-    // Kiểm tra xem có phải đang ở môi trường phát triển không
-    $isDevelopment = true; // Đặt thành false khi triển khai production
-    
-    if ($isDevelopment) {
-        // Trả về thông tin lỗi chi tiết cho môi trường phát triển
-        echo json_encode([
-            'error' => true,
-            'message' => 'Lỗi truy vấn dữ liệu',
-            'debug_info' => [
-                'error_message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString()
-            ]
-        ]);
-    } else {
-        // Trả về thông báo chung cho người dùng
-        echo json_encode([
-            'error' => true,
-            'message' => 'Đã xảy ra lỗi khi truy vấn dữ liệu'
-        ]);
-    }
+    // Return appropriate error response
+    echo json_encode([
+        'error' => true,
+        'message' => 'Lỗi truy vấn dữ liệu',
+        'debug_info' => [
+            'error_message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ]
+    ]);
 }

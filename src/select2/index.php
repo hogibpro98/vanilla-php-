@@ -146,84 +146,108 @@ try {
     
     <script>
     $(document).ready(function() {
-        // Dịch các văn bản Select2 sang tiếng Việt
-        $.fn.select2.defaults.set('language', {
-            errorLoading: function() {
-                return 'Không thể tải kết quả.';
-            },
-            inputTooLong: function(args) {
-                var overChars = args.input.length - args.maximum;
-                return 'Vui lòng xóa ' + overChars + ' ký tự';
-            },
-            inputTooShort: function(args) {
-                var remainingChars = args.minimum - args.input.length;
-                return 'Vui lòng nhập thêm ' + remainingChars + ' ký tự';
-            },
-            loadingMore: function() {
-                return 'Đang tải thêm kết quả…';
-            },
-            maximumSelected: function(args) {
-                return 'Bạn chỉ có thể chọn ' + args.maximum + ' mục';
-            },
-            noResults: function() {
-                return 'Không tìm thấy kết quả';
-            },
-            searching: function() {
-                return 'Đang tìm…';
-            },
-            removeAllItems: function() {
-                return 'Xóa tất cả các mục';
-            }
-        });
+        // Vietnamese translations for Select2
+        const vietnameseLanguage = {
+            errorLoading: () => 'Không thể tải kết quả.',
+            inputTooLong: args => `Vui lòng xóa ${args.input.length - args.maximum} ký tự`,
+            inputTooShort: args => `Vui lòng nhập thêm ${args.minimum - args.input.length} ký tự`,
+            loadingMore: () => 'Đang tải thêm kết quả…',
+            maximumSelected: args => `Bạn chỉ có thể chọn ${args.maximum} mục`,
+            noResults: () => 'Không tìm thấy kết quả',
+            searching: () => 'Đang tìm…',
+            removeAllItems: () => 'Xóa tất cả các mục'
+        };
         
-        // Select2 cơ bản
+        // Set default language
+        $.fn.select2.defaults.set('language', vietnameseLanguage);
+        
+        // Common Select2 settings
+        const commonSettings = {
+            theme: 'bootstrap-5',
+            allowClear: true
+        };
+        
+        // Basic Select2
         $('#basic-select').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Chọn một mục',
-            allowClear: true
+            ...commonSettings,
+            placeholder: 'Chọn một mục'
         });
         
-        // Select2 nhiều lựa chọn
+        // Multiple Select2
         $('#multiple-select').select2({
-            theme: 'bootstrap-5',
-            placeholder: 'Chọn một hoặc nhiều mục',
-            allowClear: true
+            ...commonSettings,
+            placeholder: 'Chọn một hoặc nhiều mục'
         });
         
-        // Select2 với AJAX truy vấn dữ liệu nhân viên
+        // Format employee result item
+        function formatEmployee(employee) {
+            if (employee.loading) {
+                return employee.text;
+            }
+            
+            return $(`
+                <div class="select2-result-employee">
+                    <div class="select2-result-employee__name">${employee.text}</div>
+                    ${employee.employee_data && employee.employee_data.title ? 
+                        `<div class="select2-result-employee__title text-muted small">
+                            ${employee.employee_data.title}
+                        </div>` : ''}
+                </div>
+            `);
+        }
+        
+        // Format selected employee item
+        function formatEmployeeSelection(employee) {
+            return employee.text || employee.id;
+        }
+        
+        // Display employee details
+        function displayEmployeeDetails(data) {
+            if (data && data.employee_data) {
+                const emp = data.employee_data;
+                
+                // Show employee name
+                $('#employee-name')
+                    .text(`${emp.first_name || ''} ${emp.last_name || ''}`)
+                    .show();
+                
+                // Update details
+                $('#emp-no').text(emp.emp_no || '');
+                $('#birth-date').text(emp.birth_date || '');
+                $('#full-name').text(`${emp.first_name || ''} ${emp.last_name || ''}`);
+                $('#gender').text(emp.gender || '');
+                $('#title').text(emp.title || '');
+                $('#salary').text(emp.salary || '');
+                $('#department').text(emp['nd1.dept_name'] || '');
+                $('#managed-dept').text(emp['nd2.dept_name'] || '');
+                
+                // Show details table
+                $('#employee-details').show();
+            }
+        }
+        
+        // AJAX Select2
         $('#ajax-select').select2({
-            theme: 'bootstrap-5',
+            ...commonSettings,
             placeholder: 'Tìm kiếm nhân viên',
-            allowClear: true,
             ajax: {
                 url: 'get_data.php',
                 dataType: 'json',
                 delay: 500,
                 data: function (params) {
-                    console.log('Select2 limit: 10 items per page');
-                    var lastId = params.lastId || 0;
-                    console.log('Last emp_id:', lastId);
-                    
                     return {
-                        q: params.term || '', // Không có từ khóa mặc định
-                        last_id: lastId
+                        q: params.term || '',
+                        last_id: params.lastId || 0
                     };
                 },
                 processResults: function (data, params) {
-                    console.log('Current page items:', data.items ? data.items.length : 0);
-                    console.log('Has more results:', data.has_more);
-                    console.log('Last emp_id in results:', data.last_id);
-                    
-                    // Kiểm tra nếu có lỗi
+                    // Handle errors
                     if (data.error) {
                         console.error('Error:', data.message);
-                        if (data.debug_info) {
-                            console.error('Debug info:', data.debug_info);
-                        }
                         return { results: [] };
                     }
                     
-                    // Lưu last_id cho lần request tiếp theo
+                    // Save last_id for next request
                     params.lastId = data.last_id;
                     
                     return {
@@ -235,61 +259,14 @@ try {
                 },
                 cache: true
             },
-            minimumInputLength: 0, // Cho phép tìm không cần nhập keyword
+            minimumInputLength: 0,
             templateResult: formatEmployee,
             templateSelection: formatEmployeeSelection
-        });
-        
-        // Định dạng kết quả hiển thị
-        function formatEmployee(employee) {
-            if (employee.loading) {
-                return employee.text;
-            }
-            
-            var $container = $(
-                '<div class="select2-result-employee">' +
-                    '<div class="select2-result-employee__name">' + employee.text + '</div>' +
-                    (employee.employee_data && employee.employee_data.title ? 
-                        '<div class="select2-result-employee__title text-muted small">' + 
-                            employee.employee_data.title + 
-                        '</div>' : '') +
-                '</div>'
-            );
-            
-            return $container;
-        }
-        
-        // Định dạng item đã chọn
-        function formatEmployeeSelection(employee) {
-            return employee.text || employee.id;
-        }
-        
-        // Hiển thị chi tiết nhân viên khi chọn
-        $('#ajax-select').on('select2:select', function (e) {
-            var data = e.params.data;
-            if (data && data.employee_data) {
-                var emp = data.employee_data;
-                
-                // Hiển thị tên nhân viên trong thẻ h2
-                $('#employee-name').text((emp.first_name || '') + ' ' + (emp.last_name || '')).show();
-                
-                // Cập nhật thông tin chi tiết
-                $('#emp-no').text(emp.emp_no || '');
-                $('#birth-date').text(emp.birth_date || '');
-                $('#full-name').text((emp.first_name || '') + ' ' + (emp.last_name || ''));
-                $('#gender').text(emp.gender || '');
-                $('#title').text(emp.title || '');
-                $('#salary').text(emp.salary || '');
-                $('#department').text(emp['nd1.dept_name'] || '');
-                $('#managed-dept').text(emp['nd2.dept_name'] || '');
-                
-                // Hiển thị bảng chi tiết
-                $('#employee-details').show();
-            }
-        });
-        
-        // Ẩn chi tiết khi xóa lựa chọn
-        $('#ajax-select').on('select2:clear', function (e) {
+        })
+        .on('select2:select', function(e) {
+            displayEmployeeDetails(e.params.data);
+        })
+        .on('select2:clear', function() {
             $('#employee-name').hide();
             $('#employee-details').hide();
         });

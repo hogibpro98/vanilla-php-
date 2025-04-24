@@ -1,56 +1,76 @@
 <?php
-header('Content-Type: application/json');
-
-// Include your database connection file
-// Adjust the path if necessary
 require_once __DIR__ . '/../db/connection.php';
 require_once __DIR__ . '/../db/database.php';
 
-
-$searchTerm = $_GET['q'] ?? ''; // Get search term if provided by Select2
-
-$results = [];
+// Set the response header to JSON
+header('Content-Type: application/json');
 
 try {
-    // Assuming $conn is your PDO or mysqli connection object from connection.php
-    // Modify the table and column names if they are different
-    $sql = "SELECT id, name as text FROM employees"; // Select 'id' and 'name' (aliased as 'text' for Select2)
+    $db = new Database();
     
-    // Add a WHERE clause if you want to filter based on the search term
-    if (!empty($searchTerm)) {
-         // Use prepared statements to prevent SQL injection
-        $sql .= " WHERE name LIKE :searchTerm";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindValue(':searchTerm', '%' . $searchTerm . '%');
-    } else {
-        $stmt = $conn->prepare($sql);
+    // Comprehensive query to get all employee data
+    $query = <<<SQL
+    SELECT
+        e.emp_id,
+        e.emp_no,
+        e.birth_date,
+        e.first_name,
+        e.last_name,
+        e.gender,
+        t.title,
+        s.salary,
+        d1.dept_name as 'nd1.dept_name',
+        d2.dept_name as 'nd2.dept_name'
+    FROM nth_employees e
+    LEFT JOIN nth_titles t ON e.emp_id = t.emp_id
+    LEFT JOIN nth_salaries s ON e.emp_id = s.emp_id
+    LEFT JOIN nth_dept_emp de ON e.emp_id = de.emp_id
+    LEFT JOIN nth_departments d1 ON de.dept_id = d1.dept_id
+    LEFT JOIN nth_dept_manager dm ON e.emp_id = dm.emp_id
+    LEFT JOIN nth_departments d2 ON dm.dept_id = d2.dept_id
+    ORDER BY e.emp_id DESC
+    -- LIMIT 10 OFFSET 2000000
+    -- LIMIT 10 OFFSET 1000000
+    LIMIT 10000 OFFSET 0
+SQL;
+    
+    // Get all employees in one query
+    $results = $db->select($query);
+    
+    // Format results for Select2
+    $formattedResults = [];
+    foreach ($results as $row) {
+        $formattedResults[] = [
+            'id' => (int)$row['emp_id'],
+            'text' => htmlspecialchars($row['emp_no'] . ' - ' . $row['first_name'] . ' ' . $row['last_name']),
+            'employee_data' => array_map(function($value) {
+                return is_string($value) ? htmlspecialchars($value) : $value;
+            }, $row)
+        ];
     }
-
-    $stmt->execute();
-
-    // Fetch results in a format suitable for Select2
-    $results = $stmt->fetchAll(PDO::FETCH_ASSOC); 
-
-    // If using mysqli, the fetching logic would be different:
-    /*
-    if ($result = $conn->query($sql)) {
-        while ($row = $result->fetch_assoc()) {
-            $row['text'] = $row['name']; // Ensure 'text' key exists
-            $results[] = $row;
-        }
-        $result->free();
-    }
-    $conn->close();
-    */
-
+    
+    // Close the database connection
+    $db->close();
+    
+    // Return all results
+    echo json_encode([
+        'items' => $formattedResults
+    ]);
+    
 } catch (Exception $e) {
-    // Handle exceptions or errors (e.g., log the error)
-    // Return an empty array or an error structure if needed
-    error_log("Error fetching data for Select2: " . $e->getMessage());
+    // Log the error
+    error_log("Database error: " . $e->getMessage());
+    
+    // Return appropriate error response
+    echo json_encode([
+        'error' => true,
+        'message' => 'Lỗi truy vấn dữ liệu',
+        'debug_info' => [
+            'error_message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
+        ]
+    ]);
 }
-
-// Return the results as JSON
-// Select2 typically expects results in a 'results' key
-echo json_encode(['results' => $results]);
 
 ?>

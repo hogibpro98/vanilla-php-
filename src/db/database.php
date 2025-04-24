@@ -13,6 +13,13 @@ class Database {
     }
     
     /**
+     * Close the PDO connection
+     */
+    public function close() {
+        $this->pdo = null;
+    }
+    
+    /**
      * Execute a SELECT query with prepared statements
      *
      * @param string $query SQL query with placeholders
@@ -23,7 +30,9 @@ class Database {
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetchAll();
+            $result = $stmt->fetchAll();
+            $stmt->closeCursor();
+            return $result;
         } catch (PDOException $e) {
             throw new Exception("Query failed: " . $e->getMessage());
         }
@@ -40,7 +49,9 @@ class Database {
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
-            return $stmt->fetch();
+            $result = $stmt->fetch();
+            $stmt->closeCursor();
+            return $result;
         } catch (PDOException $e) {
             throw new Exception("Query failed: " . $e->getMessage());
         }
@@ -62,7 +73,9 @@ class Database {
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($data);
-            return $this->pdo->lastInsertId();
+            $lastId = $this->pdo->lastInsertId();
+            $stmt->closeCursor();
+            return $lastId;
         } catch (PDOException $e) {
             throw new Exception("Insert failed: " . $e->getMessage());
         }
@@ -89,7 +102,9 @@ class Database {
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute(array_merge($data, $params));
-            return $stmt->rowCount();
+            $rowCount = $stmt->rowCount();
+            $stmt->closeCursor();
+            return $rowCount;
         } catch (PDOException $e) {
             throw new Exception("Update failed: " . $e->getMessage());
         }
@@ -109,7 +124,9 @@ class Database {
         try {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute($params);
-            return $stmt->rowCount();
+            $rowCount = $stmt->rowCount();
+            $stmt->closeCursor();
+            return $rowCount;
         } catch (PDOException $e) {
             throw new Exception("Delete failed: " . $e->getMessage());
         }
@@ -130,5 +147,12 @@ class Database {
         } catch (PDOException $e) {
             throw new Exception("Query failed: " . $e->getMessage());
         }
+    }
+    
+    /**
+     * Destructor to ensure connection is closed
+     */
+    public function __destruct() {
+        $this->close();
     }
 }
