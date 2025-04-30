@@ -16,78 +16,12 @@ $startTime = microtime(true);
 
 try {
     $db = new Database();
-    $formattedResults = []; // Kết quả cuối cùng
-    $totalRecords = 0; // Tổng số bản ghi theo điều kiện tìm kiếm
-    $processedChunks = 0; // Số chunk đã xử lý
-    $currentLastId = $lastEmpId; // ID cuối cùng hiện tại để theo dõi phân trang
-    
-    // Mặc định bắt đầu từ ID lớn nhất nếu last_id = 0
-    if ($currentLastId === 0) {
-        $maxIdQuery = "SELECT MAX(emp_id) as max_id FROM nth_employees";
-        $maxIdResult = $db->selectOne($maxIdQuery);
-        $currentLastId = isset($maxIdResult['max_id']) ? (int)$maxIdResult['max_id'] + 1 : PHP_INT_MAX;
-    }
-    
-    // Đếm tổng số bản ghi theo điều kiện tìm kiếm
-    // Chỉ đếm khi ở request đầu tiên để tối ưu hiệu suất
-    if ($lastEmpId === 0) {
-        $whereClause = "WHERE emp_id > 0";
-        $countParams = [];
-        
-        if (!empty($searchTerm)) {
-            $searchPattern = '%' . $searchTerm . '%';
-            $whereClause .= " AND (last_name LIKE ? OR first_name LIKE ? OR emp_no LIKE ?)";
-            $countParams[] = $searchPattern;
-            $countParams[] = $searchPattern;
-            $countParams[] = $searchPattern;
-        }
-        
-        $countQuery = "SELECT COUNT(*) as total FROM nth_employees {$whereClause}";
-        $countResult = $db->selectOne($countQuery, $countParams);
-        $totalRecords = $countResult['total'];
-    }
-    
-    // Tạo câu truy vấn để lấy tất cả ID phù hợp
-    $idQuery = "SELECT emp_id FROM nth_employees WHERE emp_id < ? ";
-    $idParams = [$currentLastId];
-    
-    if (!empty($searchTerm)) {
-        $searchPattern = '%' . $searchTerm . '%';
-        $idQuery .= " AND (last_name LIKE ? OR first_name LIKE ? OR emp_no LIKE ?)";
-        $idParams[] = $searchPattern;
-        $idParams[] = $searchPattern;
-        $idParams[] = $searchPattern;
-    }
-    
-    $idQuery .= " ORDER BY emp_id DESC LIMIT " . ($chunkSize * 2); // Lấy nhiều hơn để đảm bảo có đủ dữ liệu
-    
-    // Thực hiện truy vấn lấy tất cả ID phù hợp
-    $stmt = $db->query($idQuery, $idParams);
-    $allIds = [];
-    
-    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $allIds[] = $row['emp_id'];
-    }
-    $stmt->closeCursor();
-    
-    // Chia thành các chunk nhỏ để xử lý
-    $idChunks = array_chunk($allIds, $chunkSize);
-    $processedChunks = count($idChunks);
-    
-    // Biến theo dõi ID nhỏ nhất
-    $smallestIdInResults = null;
-    
-    // Xử lý từng chunk ID
-    foreach ($idChunks as $chunkIndex => $idChunk) {
-        // Nếu đã đủ số lượng kết quả cần tìm, dừng lại
-        if (count($formattedResults) >= $limit) {
-            break;
-        }
-        
-        // Chuẩn bị danh sách ID cho truy vấn IN
-        $placeholders = implode(',', array_fill(0, count($idChunk), '?'));
-        
-        // Truy vấn chi tiết cho các ID trong chunk hiện tại
+
+    // Check if a specific employee ID is requested for details
+    if (isset($_GET['emp_id'])) {
+        $empId = (int)$_GET['emp_id'];
+
+        // Query to get full details for a specific employee
         $detailQuery = <<<SQL
         SELECT
             ne.emp_id,
@@ -108,68 +42,148 @@ try {
         LEFT JOIN nth_departments nd1 ON nde.dept_id = nd1.dept_id
         LEFT JOIN nth_dept_manager ndm ON ne.emp_id = ndm.emp_id
         LEFT JOIN nth_departments nd2 on ndm.dept_id = nd2.dept_id
-        WHERE ne.emp_id IN ({$placeholders})
-        ORDER BY ne.emp_id DESC
+        WHERE ne.emp_id = ?
+        LIMIT 1
 SQL;
-        
-        // Thực hiện truy vấn chi tiết
-        $detailStmt = $db->query($detailQuery, $idChunk);
-        
-        // Xử lý từng dòng kết quả
-        while ($row = $detailStmt->fetch(PDO::FETCH_ASSOC)) {
-            // Cập nhật ID nhỏ nhất cho phân trang
-            if ($smallestIdInResults === null || $row['emp_id'] < $smallestIdInResults) {
-                $smallestIdInResults = $row['emp_id'];
-            }
-            
-            // Thêm vào kết quả nếu chưa đủ limit
-            if (count($formattedResults) < $limit) {
-                $formattedResults[] = [
-                    'id' => (int)$row['emp_id'],
-                    'text' => htmlspecialchars($row['emp_no'] . ' - ' . $row['first_name'] . ' ' . $row['last_name']),
-                    'employee_data' => array_map(function($value) {
-                        return is_string($value) ? htmlspecialchars($value) : $value;
-                    }, $row)
-                ];
-            }
+
+        $employeeDetails = $db->selectOne($detailQuery, [$empId]);
+
+        // Format and return the details
+        $response = [
+            'employee_data' => $employeeDetails ? array_map(function($value) {
+                return is_string($value) ? htmlspecialchars($value) : $value;
+            }, $employeeDetails) : null
+        ];
+
+        echo json_encode($response);
+
+    } else {
+        // Existing logic for search and pagination
+        $searchTerm = isset($_GET['q']) ? trim($_GET['q']) : '';
+        $lastEmpId = isset($_GET['last_id']) ? (int)$_GET['last_id'] : 0;
+        $limit = 10; // Số lượng bản ghi cần tìm
+        $chunkSize = 5000; // Kích thước chunk xử lý - no longer used in main query logic
+
+        $formattedResults = []; // Kết quả cuối cùng
+        $totalRecords = 0; // Tổng số bản ghi theo điều kiện tìm kiếm
+        $processedChunks = 1; // Số chunk đã xử lý - now always 1
+
+        $currentLastId = $lastEmpId; // ID cuối cùng hiện tại để theo dõi phân trang
+
+        // Mặc định bắt đầu từ ID lớn nhất nếu last_id = 0
+        if ($currentLastId === 0) {
+            $maxIdQuery = "SELECT MAX(emp_id) as max_id FROM nth_employees";
+            $maxIdResult = $db->selectOne($maxIdQuery);
+            $currentLastId = isset($maxIdResult['max_id']) ? (int)$maxIdResult['max_id'] + 1 : PHP_INT_MAX;
         }
-        
-        // Giải phóng tài nguyên
-        $detailStmt->closeCursor();
+
+        // Đếm tổng số bản ghi theo điều kiện tìm kiếm
+        // Chỉ đếm khi ở request đầu tiên để tối ưu hiệu suất
+        if ($lastEmpId === 0) {
+            $whereClause = "WHERE emp_id > 0";
+            $countParams = [];
+
+            if (!empty($searchTerm)) {
+                $searchPattern = '%' . $searchTerm . '%';
+                $whereClause .= " AND (last_name LIKE ? OR first_name LIKE ? OR emp_no LIKE ?)";
+                $countParams[] = $searchPattern;
+                $countParams[] = $searchPattern;
+                $countParams[] = $searchPattern;
+            }
+
+            $countQuery = "SELECT COUNT(*) as total FROM nth_employees {$whereClause}";
+            $countResult = $db->selectOne($countQuery, $countParams);
+            $totalRecords = $countResult['total'];
+        }
+
+        // Create the main query to fetch data with pagination and search
+        $mainQuery = <<<SQL
+        SELECT
+            ne.emp_id,
+            ne.emp_no,
+            ne.first_name,
+            ne.last_name
+        FROM
+            nth_employees ne
+        WHERE ne.emp_id < ?
+        SQL;
+
+        $mainParams = [$currentLastId];
+
+        if (!empty($searchTerm)) {
+            $searchPattern = '%' . $searchTerm . '%';
+            $mainQuery .= " AND (ne.last_name LIKE ? OR ne.first_name LIKE ? OR ne.emp_no LIKE ?)";
+            $mainParams[] = $searchPattern;
+            $mainParams[] = $searchPattern;
+            $mainParams[] = $searchPattern;
+        }
+
+        $mainQuery .= " ORDER BY ne.emp_id DESC LIMIT " . ($limit + 1);
+
+        // Execute the main query
+        $stmt = $db->query($mainQuery, $mainParams);
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $stmt->closeCursor();
+
+        $formattedResults = [];
+        $nextLastId = 0;
+        $hasMore = false;
+
+        // Process results
+        if (count($results) > $limit) {
+            // We fetched limit + 1, so there are more results
+            $hasMore = true;
+            // The next last_id is the ID of the last item in the current page (which is the limit-th item in the fetched results)
+            $nextLastId = (int)$results[$limit - 1]['emp_id'];
+            // Take only the first 'limit' results for the current page
+            $results = array_slice($results, 0, $limit);
+        } elseif (count($results) > 0) {
+             // Fetched less than or equal to limit, no more results
+             $hasMore = false;
+             // The next last_id is the ID of the last item fetched
+             $nextLastId = (int)end($results)['emp_id'];
+        } else {
+            // No results found
+            $hasMore = false;
+            $nextLastId = 0;
+        }
+
+        // Format the results for Select2
+        foreach ($results as $row) {
+            $formattedResults[] = [
+                'id' => (int)$row['emp_id'],
+                'text' => htmlspecialchars($row['emp_no'] . ' - ' . $row['first_name'] . ' ' . $row['last_name']),
+                // employee_data is NOT included here for performance
+            ];
+        }
+
+        // Giải phóng bộ nhớ
+        if (method_exists($db, 'close')) {
+            $db->close();
+        }
+        $db = null;
+
+        // Tính thời gian thực thi
+        $endTime = microtime(true);
+        $executionTime = $endTime - $startTime;
+
+        // Trả về kết quả
+        $response = [
+            'items' => $formattedResults,
+            'has_more' => $hasMore,
+            'last_id' => $nextLastId,
+            'total_records' => $totalRecords,
+            'execution_time' => round($executionTime, 3), // Gửi thời gian thực thi về client
+            'processed_chunks' => $processedChunks
+        ];
+
+        echo json_encode($response);
     }
-    
-    // Xác định last_id cho lần gọi tiếp theo
-    $nextLastId = $smallestIdInResults !== null ? $smallestIdInResults : 0;
-    
-    // Xác định có còn dữ liệu không
-    $hasMore = $nextLastId > 0 && $totalRecords > 0 && count($formattedResults) == $limit && $nextLastId > 1;
-    
-    // Giải phóng bộ nhớ
-    if (method_exists($db, 'close')) {
-        $db->close();
-    }
-    $db = null;
-    
-    // Tính thời gian thực thi
-    $endTime = microtime(true);
-    $executionTime = $endTime - $startTime;
-    
-    // Trả về kết quả
-    $response = [
-        'items' => $formattedResults,
-        'has_more' => $hasMore,
-        'last_id' => $nextLastId,
-        'total_records' => $totalRecords,
-        'execution_time' => round($executionTime, 3), // Gửi thời gian thực thi về client
-        'processed_chunks' => $processedChunks
-    ];
-    
-    echo json_encode($response);
-    
+
 } catch (Exception $e) {
     // Log lỗi
     error_log("Database error: " . $e->getMessage());
-    
+
     // Trả về thông báo lỗi
     echo json_encode([
         'error' => true,

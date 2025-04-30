@@ -224,25 +224,26 @@ try {
                 processResults: function (data, params) {
                     // Dừng bộ đếm thời gian
                     clearInterval(requestTimers.interval);
-                    
+
                     // Tính thời gian phản hồi
                     var requestEndTime = new Date().getTime();
                     var totalTime = (requestEndTime - requestTimers.start) / 1000;
                     requestTimers = {}; // Reset bộ đếm
-                    
+
                     // Show pagination info
                     if (data && data.total_records > 0) {
                         $('#pagination-info').show();
-                        
+
                         // Update stats
                         $('#search-stats').text('Tìm thấy ' + data.total_records + ' bản ghi với từ khóa "' + (params.term || '') + '"');
-                        
+
                         // Hiển thị thông tin về thời gian thực thi
-                        $('#chunks-info').text('Chunks đã xử lý: ' + data.processed_chunks);
+                        // processed_chunks is now always 1 in the new backend logic
+                        $('#chunks-info').text('Chunks đã xử lý: 1');
                         $('#time-info').html('<strong>Thời gian:</strong> Server: ' + data.execution_time + 's | Tổng: ' + totalTime.toFixed(2) + 's');
                         $('#time-box').show();
                         $('#records-info').text('Kết quả: ' + data.items.length + ' / ' + data.total_records);
-                        
+
                         // Cập nhật thanh tiến trình
                         var progress = 100;
                         if (data.has_more) {
@@ -252,10 +253,11 @@ try {
                     } else {
                         $('#pagination-info').hide();
                     }
-                    
+
                     // Set up pagination for the next request
                     params.last_id = data.last_id;
-                    
+
+                    // Note: employee_data is no longer included in the initial search results
                     return {
                         results: data.items || [],
                         pagination: {
@@ -275,55 +277,73 @@ try {
             templateResult: formatEmployee,
             templateSelection: formatEmployeeSelection
         });
-        
+
         // Định dạng kết quả hiển thị
         function formatEmployee(employee) {
             if (employee.loading) {
                 return employee.text;
             }
-            
+
+            // Only display basic info in the dropdown list
             var $container = $(
                 '<div class="select2-result-employee">' +
                     '<div class="select2-result-employee__name">' + employee.text + '</div>' +
-                    (employee.employee_data && employee.employee_data.title ? 
-                        '<div class="select2-result-employee__title text-muted small">' + 
-                            employee.employee_data.title + 
-                        '</div>' : '') +
                 '</div>'
             );
-            
+
             return $container;
         }
-        
+
         // Định dạng item đã chọn
         function formatEmployeeSelection(employee) {
             return employee.text || employee.id;
         }
-        
+
         // Hiển thị chi tiết nhân viên khi chọn
         $('#ajax-select').on('select2:select', function (e) {
             var data = e.params.data;
-            if (data && data.employee_data) {
-                var emp = data.employee_data;
-                
-                // Hiển thị tên nhân viên
-                $('#employee-name').text((emp.first_name || '') + ' ' + (emp.last_name || '')).show();
-                
-                // Cập nhật thông tin chi tiết
-                $('#emp-no').text(emp.emp_no || '');
-                $('#birth-date').text(emp.birth_date || '');
-                $('#full-name').text((emp.first_name || '') + ' ' + (emp.last_name || ''));
-                $('#gender').text(emp.gender || '');
-                $('#title').text(emp.title || '');
-                $('#salary').text(emp.salary || '');
-                $('#department').text(emp['nd1.dept_name'] || '');
-                $('#managed-dept').text(emp['nd2.dept_name'] || '');
-                
-                // Hiển thị bảng chi tiết
-                $('#employee-details').show();
+            if (data && data.id) {
+                // Fetch full employee details via a new AJAX request
+                $.ajax({
+                    url: 'get_data.php', // Use the same endpoint
+                    dataType: 'json',
+                    data: {
+                        emp_id: data.id // Send the selected employee ID
+                    },
+                    success: function(detailData) {
+                        if (detailData && detailData.employee_data) {
+                            var emp = detailData.employee_data;
+
+                            // Hiển thị tên nhân viên
+                            $('#employee-name').text((emp.first_name || '') + ' ' + (emp.last_name || '')).show();
+
+                            // Cập nhật thông tin chi tiết
+                            $('#emp-no').text(emp.emp_no || '');
+                            $('#birth-date').text(emp.birth_date || '');
+                            $('#full-name').text((emp.first_name || '') + ' ' + (emp.last_name || ''));
+                            $('#gender').text(emp.gender || '');
+                            $('#title').text(emp.title || '');
+                            $('#salary').text(emp.salary || '');
+                            $('#department').text(emp['nd1.dept_name'] || '');
+                            $('#managed-dept').text(emp['nd2.dept_name'] || '');
+
+                            // Hiển thị bảng chi tiết
+                            $('#employee-details').show();
+                        } else {
+                            // Handle case where details are not found
+                            $('#employee-name').text('Không tìm thấy chi tiết nhân viên').show();
+                            $('#employee-details').hide();
+                        }
+                    },
+                    error: function() {
+                        // Handle AJAX error for details fetch
+                        $('#employee-name').text('Lỗi khi tải chi tiết nhân viên').show();
+                        $('#employee-details').hide();
+                    }
+                });
             }
         });
-        
+
         // Ẩn chi tiết khi xóa lựa chọn
         $('#ajax-select').on('select2:clear', function (e) {
             $('#employee-name').hide();
